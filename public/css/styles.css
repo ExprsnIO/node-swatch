@@ -1,0 +1,213 @@
+/* Node Swatch - Custom Styles */
+
+:root {
+  /* Default palette colors (will be overwritten by JS) */
+  --palette-1: #3498db;
+  --palette-2: #e74c3c;
+  --palette-3: #2ecc71;
+  --palette-4: #9b59b6;
+  --palette-5: #f39c12;
+  --palette-6: #1abc9c;
+
+  /* Contrast colors for text */
+  --palette-1-contrast: #ffffff;
+  --palette-2-contrast: #ffffff;
+  --palette-3-contrast: #ffffff;
+  --palette-4-contrast: #ffffff;
+  --palette-5-contrast: #000000;
+  --palette-6-contrast: #ffffff;
+}
+
+body {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Swatch styles */
+.swatch {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.swatch:hover {
+  transform: scale(1.02);
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.swatch:active {
+  transform: scale(0.98);
+}
+
+.swatch-hex {
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.25rem;
+}
+
+.swatch-role {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.swatch-hsl {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
+
+.swatch-copy-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.swatch:hover .swatch-copy-icon {
+  opacity: 0.8;
+}
+
+/* Card header transitions */
+.card-header {
+  transition: background-color 0.3s ease;
+}
+
+/* Navbar transition */
+#main-navbar {
+  transition: background-color 0.3s ease;
+}
+
+/* Button transitions */
+.btn {
+  transition: all 0.2s ease;
+}
+
+/* Progress bar animations */
+.progress-bar {
+  transition: background-color 0.3s ease, width 0.6s ease;
+}
+
+/* Badge hover effect */
+.badge {
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.1);
+}
+
+/* Alert transitions */
+.alert {
+  transition: background-color 0.3s ease;
+}
+
+/* Form styling */
+.form-control-color {
+  width: 50px;
+  padding: 0.25rem;
+}
+
+/* Export code styling */
+#exportCode {
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* List group colored border */
+.list-group-item {
+  transition: border-color 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .swatch {
+    min-height: 100px;
+  }
+
+  .swatch-hex {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .swatch {
+    min-height: 80px;
+  }
+
+  .swatch-hex {
+    font-size: 0.8rem;
+  }
+
+  .swatch-role,
+  .swatch-hsl {
+    display: none;
+  }
+}
+
+/* Loading state */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Harmony description styling */
+#harmonyDescription {
+  line-height: 1.5;
+  color: #555;
+}
+
+/* Color picker enhancement */
+input[type="color"] {
+  cursor: pointer;
+  border: none;
+  height: 38px;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Toast styling */
+.toast {
+  background-color: white;
+}
+
+.toast-header {
+  color: var(--palette-1);
+}
+
+/* Dropdown menu hover effect */
+.dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Card component shadow on hover */
+.card {
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

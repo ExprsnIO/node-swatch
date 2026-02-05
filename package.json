@@ -1,0 +1,22 @@
+{
+  "name": "node-swatch",
+  "version": "1.0.0",
+  "description": "Color palette generator with color theory harmonies and Bootstrap preview",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "color",
+    "palette",
+    "swatch",
+    "color-theory",
+    "bootstrap"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

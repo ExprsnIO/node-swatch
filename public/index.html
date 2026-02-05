@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node Swatch - Color Palette Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark" id="main-navbar" style="background-color: var(--palette-1, #6c757d);">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-palette"></i> Node Swatch
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Gallery</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              Export
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" onclick="exportPalette('css')">CSS Variables</a></li>
+              <li><a class="dropdown-item" href="#" onclick="exportPalette('scss')">SCSS Variables</a></li>
+              <li><a class="dropdown-item" href="#" onclick="exportPalette('json')">JSON</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="exportPalette('tailwind')">Tailwind Config</a></li>
+            </ul>
+          </li>
+        </ul>
+        <span class="navbar-text">
+          <span class="badge" id="harmony-badge" style="background-color: var(--palette-2, #17a2b8);">random</span>
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <!-- Controls Panel -->
+      <div class="col-lg-3 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header" style="background-color: var(--palette-1, #6c757d); color: white;">
+            <i class="bi bi-sliders"></i> Controls
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="colorCount" class="form-label">Number of Colors</label>
+              <select class="form-select" id="colorCount">
+                <option value="2">2 Colors</option>
+                <option value="3">3 Colors</option>
+                <option value="4">4 Colors</option>
+                <option value="5" selected>5 Colors</option>
+                <option value="6">6 Colors</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="harmonyType" class="form-label">Color Harmony</label>
+              <select class="form-select" id="harmonyType">
+                <option value="random">Random</option>
+                <option value="complementary">Complementary</option>
+                <option value="analogous">Analogous</option>
+                <option value="triadic">Triadic</option>
+                <option value="split-complementary">Split Complementary</option>
+                <option value="tetradic">Tetradic</option>
+                <option value="monochromatic">Monochromatic</option>
+                <option value="square">Square</option>
+                <option value="double-complementary">Double Complementary</option>
+                <option value="custom">Custom Angle</option>
+              </select>
+            </div>
+
+            <div class="mb-3" id="customAngleGroup" style="display: none;">
+              <label for="customAngle" class="form-label">Angle Offset (degrees)</label>
+              <input type="number" class="form-control" id="customAngle" value="45" min="1" max="180">
+            </div>
+
+            <div class="mb-3">
+              <label for="baseColor" class="form-label">Base Color (optional)</label>
+              <div class="input-group">
+                <input type="color" class="form-control form-control-color" id="baseColorPicker" value="#3498db">
+                <input type="text" class="form-control" id="baseColor" placeholder="#3498db">
+                <button class="btn btn-outline-secondary" type="button" id="clearBaseColor" title="Clear">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="useBaseColor">
+                <label class="form-check-label" for="useBaseColor">Use this base color</label>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button class="btn btn-lg" id="generateBtn" style="background-color: var(--palette-1, #3498db); color: white;">
+                <i class="bi bi-shuffle"></i> Generate Palette
+              </button>
+              <button class="btn btn-outline-secondary" id="randomizeBtn">
+                <i class="bi bi-dice-5"></i> Full Random
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Harmony Info Card -->
+        <div class="card shadow-sm mt-3">
+          <div class="card-header" style="background-color: var(--palette-2, #17a2b8); color: white;">
+            <i class="bi bi-info-circle"></i> Harmony Info
+          </div>
+          <div class="card-body">
+            <p id="harmonyDescription" class="mb-0 small">
+              Click generate to create a random color palette!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9">
+        <!-- Swatch Display -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-palette2"></i> Color Swatches</span>
+            <small class="text-muted">Click a color to copy hex code</small>
+          </div>
+          <div class="card-body p-0">
+            <div class="row g-0" id="swatchContainer">
+              <!-- Swatches will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Bootstrap Components Preview -->
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <i class="bi bi-grid-3x3-gap"></i> Bootstrap Components Preview
+          </div>
+          <div class="card-body">
+            <!-- Buttons Row -->
+            <h6 class="text-muted mb-3">Buttons</h6>
+            <div class="mb-4" id="buttonPreview">
+              <button class="btn me-2 mb-2" style="background-color: var(--palette-1); color: var(--palette-1-contrast);">Primary</button>
+              <button class="btn me-2 mb-2" style="background-color: var(--palette-2); color: var(--palette-2-contrast);">Secondary</button>
+              <button class="btn me-2 mb-2" style="background-color: var(--palette-3); color: var(--palette-3-contrast);">Accent 1</button>
+              <button class="btn me-2 mb-2" style="background-color: var(--palette-4); color: var(--palette-4-contrast);">Accent 2</button>
+              <button class="btn me-2 mb-2" style="background-color: var(--palette-5); color: var(--palette-5-contrast);">Accent 3</button>
+              <button class="btn me-2 mb-2" style="background-color: var(--palette-6); color: var(--palette-6-contrast);">Accent 4</button>
+            </div>
+
+            <!-- Outline Buttons -->
+            <div class="mb-4" id="outlineButtonPreview">
+              <button class="btn me-2 mb-2" style="border: 2px solid var(--palette-1); color: var(--palette-1); background: transparent;">Primary</button>
+              <button class="btn me-2 mb-2" style="border: 2px solid var(--palette-2); color: var(--palette-2); background: transparent;">Secondary</button>
+              <button class="btn me-2 mb-2" style="border: 2px solid var(--palette-3); color: var(--palette-3); background: transparent;">Accent 1</button>
+              <button class="btn me-2 mb-2" style="border: 2px solid var(--palette-4); color: var(--palette-4); background: transparent;">Accent 2</button>
+            </div>
+
+            <!-- Alerts -->
+            <h6 class="text-muted mb-3">Alerts</h6>
+            <div class="mb-4" id="alertPreview">
+              <div class="alert mb-2" style="background-color: var(--palette-1); color: var(--palette-1-contrast); border: none;">
+                <i class="bi bi-check-circle"></i> This is a primary alert with palette color 1.
+              </div>
+              <div class="alert mb-2" style="background-color: var(--palette-2); color: var(--palette-2-contrast); border: none;">
+                <i class="bi bi-info-circle"></i> This is a secondary alert with palette color 2.
+              </div>
+            </div>
+
+            <!-- Progress Bars -->
+            <h6 class="text-muted mb-3">Progress Bars</h6>
+            <div class="mb-4" id="progressPreview">
+              <div class="progress mb-2" style="height: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: 80%; background-color: var(--palette-1);">80%</div>
+              </div>
+              <div class="progress mb-2" style="height: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: 60%; background-color: var(--palette-2);">60%</div>
+              </div>
+              <div class="progress mb-2" style="height: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: 40%; background-color: var(--palette-3);">40%</div>
+              </div>
+              <div class="progress" style="height: 25px;">
+                <div class="progress-bar" role="progressbar" style="width: 25%; background-color: var(--palette-1);">25%</div>
+                <div class="progress-bar" role="progressbar" style="width: 25%; background-color: var(--palette-2);">25%</div>
+                <div class="progress-bar" role="progressbar" style="width: 25%; background-color: var(--palette-3);">25%</div>
+                <div class="progress-bar" role="progressbar" style="width: 25%; background-color: var(--palette-4);">25%</div>
+              </div>
+            </div>
+
+            <!-- Badges -->
+            <h6 class="text-muted mb-3">Badges</h6>
+            <div class="mb-4" id="badgePreview">
+              <span class="badge me-2" style="background-color: var(--palette-1);">Primary</span>
+              <span class="badge me-2" style="background-color: var(--palette-2);">Secondary</span>
+              <span class="badge me-2" style="background-color: var(--palette-3);">Accent 1</span>
+              <span class="badge me-2" style="background-color: var(--palette-4);">Accent 2</span>
+              <span class="badge me-2" style="background-color: var(--palette-5);">Accent 3</span>
+              <span class="badge me-2" style="background-color: var(--palette-6);">Accent 4</span>
+            </div>
+
+            <!-- Cards -->
+            <h6 class="text-muted mb-3">Cards</h6>
+            <div class="row mb-4" id="cardPreview">
+              <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-color: var(--palette-1);">
+                  <div class="card-header" style="background-color: var(--palette-1); color: var(--palette-1-contrast);">
+                    Featured
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title" style="color: var(--palette-1);">Card Title</h5>
+                    <p class="card-text">Some example text to build on the card title.</p>
+                    <a href="#" class="btn btn-sm" style="background-color: var(--palette-1); color: var(--palette-1-contrast);">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-color: var(--palette-2);">
+                  <div class="card-header" style="background-color: var(--palette-2); color: var(--palette-2-contrast);">
+                    Popular
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title" style="color: var(--palette-2);">Card Title</h5>
+                    <p class="card-text">Some example text to build on the card title.</p>
+                    <a href="#" class="btn btn-sm" style="background-color: var(--palette-2); color: var(--palette-2-contrast);">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-color: var(--palette-3);">
+                  <div class="card-header" style="background-color: var(--palette-3); color: var(--palette-3-contrast);">
+                    New
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title" style="color: var(--palette-3);">Card Title</h5>
+                    <p class="card-text">Some example text to build on the card title.</p>
+                    <a href="#" class="btn btn-sm" style="background-color: var(--palette-3); color: var(--palette-3-contrast);">Go somewhere</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dropdown -->
+            <h6 class="text-muted mb-3">Dropdown Menu</h6>
+            <div class="mb-4" id="dropdownPreview">
+              <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" style="background-color: var(--palette-1); color: var(--palette-1-contrast);">
+                  Dropdown Button
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#" style="color: var(--palette-1);">Action</a></li>
+                  <li><a class="dropdown-item" href="#" style="color: var(--palette-2);">Another action</a></li>
+                  <li><a class="dropdown-item" href="#" style="color: var(--palette-3);">Something else</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#" style="color: var(--palette-4);">Separated link</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- List Group -->
+            <h6 class="text-muted mb-3">List Group</h6>
+            <div class="row" id="listGroupPreview">
+              <div class="col-md-6">
+                <ul class="list-group">
+                  <li class="list-group-item" style="border-left: 4px solid var(--palette-1);">Primary item</li>
+                  <li class="list-group-item" style="border-left: 4px solid var(--palette-2);">Secondary item</li>
+                  <li class="list-group-item" style="border-left: 4px solid var(--palette-3);">Accent item</li>
+                  <li class="list-group-item" style="border-left: 4px solid var(--palette-4);">Another item</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast for copy notification -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="copyToast" class="toast" role="alert">
+      <div class="toast-header">
+        <i class="bi bi-clipboard-check me-2"></i>
+        <strong class="me-auto">Copied!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body" id="copyToastBody">
+        Color copied to clipboard
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-download"></i> Export Palette</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <pre><code id="exportCode"></code></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn" style="background-color: var(--palette-1); color: var(--palette-1-contrast);" onclick="copyExportCode()">
+            <i class="bi bi-clipboard"></i> Copy Code
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
